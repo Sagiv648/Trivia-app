@@ -3,45 +3,41 @@ import React, { useEffect, useState } from 'react'
 import { RadioButton, Checkbox } from 'react-native-paper'
 import axios from 'axios'
 import Checker from './Checker'
-import { useSelector } from 'react-redux'
-
-
+import { useSelector, useDispatch } from 'react-redux'
+import {addQuestions} from './../global/questions'
+import {questionsGetter} from './../global/questions'
+import { fetchQuestions } from './../global/questions'
+import CategoryGroup from './CategoryGroup'
 
 const SettingsScreen = (props) => {
     const [difficulty, setDifficulty] = useState("")
-    const [radiobtnStatus, setRadioBtnStatus] = useState(difficulty)
-    const [checkedColor, setCheckedColor] = useState("")
-    const [categories, setCategories] = useState([])
-    const [pickedCategories,setPickedCategories] = useState([])
+    const [pickedCategory, setPickedCategory] = useState("")
     const radioBtnStyle = {
         opacity: 0.5,
         backgroundColor: 'blue'
     }
-    const cat = useSelector((state) => state.editPickedCategories.value)
+    
+    const dispatch = useDispatch()
+    const isInvalid = props.route.params.invalid
 
-
-    useEffect(()=> {
-        const fetchData = async () => {
-            const url = 'https://opentdb.com/api_category.php'
-            axios.get(url, {method: 'GET'})
-            .then((res) => {
-                setCategories(res.data)
-            })
-            .catch((err) => {
-                console.log(`Error\n${err}`);
-            }) 
-        }
-
-        fetchData()
-        
-        
-    },[])
-
+    
   return (
     <View style={styles.container}>
+
+        {
+            isInvalid ? <Text style={styles.text}>Couldn't find data, please pick another combination or a problem occured with the network, try again.</Text> : <Text></Text>
+            
+        }
+
+
         <Text style={styles.text}>Please select the settings for your game:</Text>
         <TouchableOpacity 
-        onPress={() => props.navigation.navigate("Question")}
+        onPress={() => 
+            {   
+               dispatch(fetchQuestions({category: pickedCategory, difficulty: difficulty.toLowerCase()}))
+                props.navigation.navigate("Question", {questionIndex: 0, score: 0})
+            }
+            }
         style={{ paddingLeft: 5,width: '35%', height: '15%', backgroundColor: '#bb1a3b', borderRadius: 50
                                  , justifyContent: 'center', alignItems: 'center'
                                  , alignSelf : 'center'}}>
@@ -76,13 +72,17 @@ const SettingsScreen = (props) => {
         </View>
         <Text></Text>
         <View> 
-            <Text style={styles.text}>Select the categories:</Text>
-            <Text style={styles.text}>Note: you will get random amount of each category</Text>
-            
+            <Text style={styles.text}>Select the category:</Text>
+           
+            <CategoryGroup pickCategory= {setPickedCategory} getterPickedCategory={pickedCategory}/>
 
-            <FlatList
+
+
+
+
+            {/* <FlatList
             keyExtractor={(item) => item.id}
-            data={categories.trivia_categories}
+            data={categories}
             renderItem={(itemRow) => {
                 
                     return (<Checker data = {itemRow.item} />)
@@ -90,7 +90,7 @@ const SettingsScreen = (props) => {
                      
 
             }}
-            />
+            /> */}
             
         </View>
      

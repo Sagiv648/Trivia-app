@@ -5,72 +5,95 @@ import { View,
   SafeAreaView, 
   StyleSheet, 
   Image,
-  FlatList, 
+  FlatList,
+  TouchableOpacity, 
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import {pickedCategoryEdit } from './../global/categories'
-import {addQuestions} from './../global/questions'
-import {questionsGetter} from './../global/questions'
+import { fetchQuestions } from './../global/questions'
+import { nextQuestion } from './../global/questions'
+
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import axios from 'axios'
+import QuestionBody from './QuestionBody'
 const QuestionsScreen = (props) => {
-
-  const categories = useSelector((state) => state.editPickedCategories.value)
-  const [questions,setQuestions] = useState([])
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    console.log(categories);
-    const fetch = async (catId, amount) => {
-              axios.get(`https://opentdb.com/api.php?amount=${amount}&category=${catId}`)
-              .then((result) => {
-                setQuestions([...questions, result.data.results])
-                  //console.log(result.data.results);
-                  //state.value.push(result.data.results)
-              })
-              .catch((err) => console.log(`Error\n ${err}`))
-
-          }
-
-          if(20 % categories.length == 0){
-              const questionsAmount = 20 / categories.length
-              for(let i = 0; i < categories.length; i++){
-                  fetch(categories[i].id, questionsAmount)
-                  
-              }
-              //console.log(state.value);
-          }
-          //console.log(state.value);
-      
-  },[])
-
-
+  const questions = useSelector((state) => state.questionsGetter.value)
   
-  dispatch(addQuestions(questions))
+
+
   //console.log(questions);
-  const questionList = useSelector((state) => state.questionsGetter.value)
-  console.log(questionList);
+
+  switch (props.route.params.questionIndex) {
+    case 10:
+      
+      break;
+    case 15:
+      
+      break;
+    case 20:
+      
+      break;
+    default:
+      break;
+  }
+  if(!questions){
+    props.navigation.navigate("Settings", {invalid: true})
+  }
+ 
+  
+
+
 
   return (
     <View style={styles.container}>
 
       {/* Header Part */}
       <View style={styles.header}>
-        <Text style={styles.text_header}>Questions 1 / 20</Text>
+        <Text style={styles.text_header}>{`Question ${props.route.params.questionIndex + 1} out of 20`}</Text>
+        <TouchableOpacity 
+        style={{marginBottom: 17}}
+        onPress={() => {
+          props.navigation.navigate("Question", {questionIndex: props.route.params.questionIndex+1, score: props.route.params.score+ 1})
+        }}>
+          <AntDesign name='forward' size={30} color='white'/>
+          </TouchableOpacity>
         <Image
           source={require('../assets/logo.png')}
           style={styles.image}
         />
       </View>
 
-      {/* Questions Part */}
-      <View style={{marginTop: 20, marginLeft: 20}}>
-        <Text onPress={()=> 
-          {
-            props.navigation.navigate("Home")
-            dispatch(pickedCategoryEdit({data: "", action: 'CLEAR'}))
-          }}
-          >LEVEL : HARD, if you want to quit press here</Text>
-      </View>
+
+
+      {
+        props.route.params.questionIndex+1 == 20 && props.route.params.score < 15 ? 
+        <Image 
+        style={styles.image}
+        source={require('./../assets/failed_character.png')}/> :
+         props.route.params.questionIndex+1 == 20 && props.route.params.score >= 15 ?
+         <Image 
+         style={styles.image}
+         source={require('./../assets/success_character.png')}/>
+         : <Text>{questions.length != 0 ? questions[props.route.params.questionIndex].question : "Loading..."}</Text> 
+      }
+      
+      
+      {/*  Question body */}
+
+
+
+
+      
+
+      {/* Forefit part */}
+     
+        <TouchableOpacity 
+        
+        style={{marginTop: 590,justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', borderRadius: 40, backgroundColor: '#125881'}}
+        onPress={() => {props.navigation.navigate("Home")}} >
+
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}} >If you would like to forefit, press here.</Text>
+        </TouchableOpacity>
     </View>
   )
 }
