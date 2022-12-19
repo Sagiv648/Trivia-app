@@ -7,11 +7,9 @@ const BASE_URL = `https://opentdb.com/api.php?`
 
 export const fetchQuestions = createAsyncThunk("questions/fetchQuestions",
 async (options, thunkAPI) => {
+    
     try{
 
-        
-        const x = `${BASE_URL}amount=20&category=${options.category.id}&difficulty=${options.difficulty}`
-        
         const data = await axios.get(`${BASE_URL}amount=20&category=${options.category.id}&difficulty=${options.difficulty}`)
         return data.data.results
     }
@@ -30,9 +28,6 @@ const questionsSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchQuestions.fulfilled, (state,action) => {
-            //console.log(action.payload);
-
-            
             state.value = action.payload
         })
     }
