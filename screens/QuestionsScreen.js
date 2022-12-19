@@ -17,30 +17,19 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import axios from 'axios'
 import QuestionBody from './QuestionBody'
 import { RadioButton } from 'react-native-paper'
+import Timer from './Timer'
 const QuestionsScreen = (props) => {
 
   
-  let time = 0
-  if(qIndex <= 10){
-    time = 20
-  }
-  else if(qIndex <= 15){
-    time = 15
-
-  }
-  else {
-    time = 10
-  }
-  
  
   const questions = useSelector((state) => state.questionsGetter.value)
-  const radioBtnStyle = {
-    opacity: 0.5,
-    backgroundColor: 'blue'
-}
+//   const radioBtnStyle = {
+//     opacity: 0.5,
+//     backgroundColor: 'blue'
+// }
   //console.log(questions);
   const [answer, setAnswer] = useState("")
- 
+  const [outOfTime, setOutOfTime] = useState(false)
   const qIndex = props.route.params.questionIndex;
   const score = props.route.params.score;
   
@@ -63,12 +52,17 @@ const QuestionsScreen = (props) => {
   useEffect(() => {
   
     
-    
+    setOutOfTime(false)
     setAnswer("")
 
   
   },[qIndex])
 
+if(outOfTime){
+  console.log("Out of time");
+    props.navigation.navigate("Question", {questionIndex: qIndex+1, 
+      score: answer == currentQuestion.correct_answer ? score + 1 : score, outOfTime: outOfTime })
+  }
  
   //console.log(currentQuestion);
  
@@ -102,57 +96,64 @@ const QuestionsScreen = (props) => {
       </View>
 
 
-      <View style={{width: '100%', height: '50%', backgroundColor: '#1d70a3', marginBottom: 10, borderBottomLeftRadius: 40, borderBottomRightRadius: 40}}>
+      <View style={[{width: '100%', height: '50%', backgroundColor: '#1d70a3', marginBottom: 10, borderBottomLeftRadius: 40, borderBottomRightRadius: 40,}, qIndex == 20 ? {backgroundColor: 'transparent'} : {}]}>
       {
         props.route.params.questionIndex == 20 && props.route.params.score < 15 ? 
         <Image 
-        style={[styles.finalScreenImage, qIndex == 20 ? {backgroundColor: 'white'} : {}]}
+        style={[styles.finalScreenImage,]}
         source={require('./../assets/failed_character.png')}
         resizeMode='stretch'  />
         
         :
          props.route.params.questionIndex == 20 && props.route.params.score >= 15 ?
          <Image 
-         style={[styles.finalScreenImage, qIndex == 20 ? {backgroundColor: 'white'} : {}]}
+         style={[styles.finalScreenImage, ]}
          source={require('./../assets/success_character.png')}
          resizeMode='stretch'/>
          :  
-         <RadioButton.Group 
-            onValueChange={(val) =>  setAnswer(val)}>
-            {
-              currentQuestion ?  <Text style={[styles.text, {color: currentQuestion.difficulty == 'hard' ? '#8e052f' :
-                currentQuestion.difficulty == 'medium' ? '#aa7305' : '#0bb808'}]}>{currentQuestion.difficulty.toUpperCase()} Question</Text> :
-                <Text></Text>
-            }
+         <QuestionBody 
+         setterAnswer = {setAnswer}
+         answer = {answer}
+         questionIndex = {qIndex}
+         questions={questions}
+         questionAnswers = {questionAnswers}
+         />
+      //    <RadioButton.Group 
+      //       onValueChange={(val) =>  setAnswer(val)}>
+      //       {
+      //         currentQuestion ?  <Text style={[styles.text, {color: currentQuestion.difficulty == 'hard' ? '#8e052f' :
+      //           currentQuestion.difficulty == 'medium' ? '#aa7305' : '#0bb808'}]}>{currentQuestion.difficulty.toUpperCase()} Question</Text> :
+      //           <Text></Text>
+      //       }
          
 
-        <Text
-        style={[styles.text, {color: '#0c3271'}]}
+      //   <Text
+      //   style={[styles.text, {color: '#0c3271'}]}
         
-        >{questions.length != 0 ? questions[props.route.params.questionIndex].question : "Loading..."}</Text> 
-      <FlatList 
-      data={ qIndex < 10 ? questionAnswers.sort((a,b) => a == b ? 0 : a < b ? -1 : 1) : questionAnswers}
-      keyExtractor={(item,index) => index}
-      renderItem={({item}) => {
-        return( <RadioButton.Item 
-          style={answer == item ? radioBtnStyle : ""}
-          label={item}
-          labelStyle={[styles.text, {color: '#091e5a'}]} 
-          value={item}/>)
-      }}/>
+      //   >{questions.length != 0 ? questions[props.route.params.questionIndex].question : "Loading..."}</Text> 
+      // <FlatList 
+      // data={ qIndex < 10 ? questionAnswers.sort((a,b) => a == b ? 0 : a < b ? -1 : 1) : questionAnswers}
+      // keyExtractor={(item,index) => index}
+      // renderItem={({item}) => {
+      //   return( <RadioButton.Item 
+      //     style={answer == item ? radioBtnStyle : ""}
+      //     label={item}
+      //     labelStyle={[styles.text, {color: '#091e5a'}]} 
+      //     value={item}/>)
+      // }}/>
 
 
-      </RadioButton.Group> 
+      // </RadioButton.Group> 
       }
       
      
       </View>
 
       {/* Timer */}
-      <View
-      style={{width: '100%', height: '20%', backgroundColor: 'purple', borderRadius: 40, justifyContent: 'center'}}>
-        <Text style={[styles.text, {alignSelf: 'center', color: 'green'}]}>TIME TO FINISH</Text>
-      </View>
+      <Timer 
+      outOfTimeSetter = {setOutOfTime}
+      qIndex={qIndex} styles={styles}
+      answer={answer}/>
       {/*  Question body */}
 
 
@@ -172,7 +173,7 @@ const QuestionsScreen = (props) => {
             qIndex < 20 ?
             <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}} >You can exit any time, press here.</Text> :
             score > 15 ? <Text style={[{fontSize: 20, fontWeight: 'bold', color: 'white'}, {color: 'green'}]}>You win with {score} points. Press here to exit.</Text> :
-            <Text style={[{fontSize: 20, fontWeight: 'bold', color: 'white'}, {color: 'red'}]}>Atleast 15 points are needed to win, you lost. Press here to exit.</Text>
+            <Text style={[{fontSize: 20, fontWeight: 'bold', color: 'white'}, {color: 'red'}]}>Atleast 15 points are needed to win, you recieved {score}. Press here to exit.</Text>
           }
         
         </TouchableOpacity>

@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import React, { useEffect, useState } from 'react'
 import { RadioButton, Checkbox } from 'react-native-paper'
 import axios from 'axios'
-import Checker from './Checker'
 import { useSelector, useDispatch } from 'react-redux'
 import {addQuestions} from './../global/questions'
 import {questionsGetter} from './../global/questions'
