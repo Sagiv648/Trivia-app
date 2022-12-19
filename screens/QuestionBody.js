@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native'
+import { Text, FlatList } from 'react-native'
 import React from 'react'
 import { RadioButton } from 'react-native-paper';
+
+import styles from './styles';
 const QuestionBody = (props) => {
     
   const qIndex = props.questionIndex;
@@ -11,10 +13,7 @@ const QuestionBody = (props) => {
   const answer = props.answer
 
 
-  const radioBtnStyle = {
-    opacity: 0.5,
-    backgroundColor: 'blue'
-}
+
 
   return (
     
@@ -36,7 +35,7 @@ data={ qIndex < 10 ? questionAnswers.sort((a,b) => a == b ? 0 : a < b ? -1 : 1) 
 keyExtractor={(item,index) => index}
 renderItem={({item}) => {
 return( <RadioButton.Item 
-  style={answer == item ? radioBtnStyle : ""}
+  style={answer == item ? styles.radioBtnCheckedStyle : ""}
   label={item}
   labelStyle={[styles.text, {color: '#091e5a'}]} 
   value={item}/>)
@@ -50,45 +49,3 @@ return( <RadioButton.Item
 
 export default QuestionBody
 
-const styles = StyleSheet.create({
-  container: {
-    flex:1, 
-    backgroundColor:'#ffff',
-    
-  },
-  finalScreenImage: {
-    width: '50%',
-    height: '100%',
-    alignSelf: 'center',
-    
-  },
-  image: {
-    height: 60, 
-    width: 60, 
-    marginRight: 10,
-    marginBottom: 5,
-  },
-  header: {
-    width: '100%', 
-    height: '12%', 
-    backgroundColor: '#42B4EC', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'flex-end'
-  },
-  text_header: {
-    fontWeight:'300%', 
-    fontSize:23, 
-    marginBottom: 15, 
-    marginLeft: 15, 
-    fontWeight: 'bold', 
-    fontSize: 28, 
-    color: '#ffff',
-  },
-  text: {
-      fontSize: 20,
-      
-      fontWeight :'bold',
-      color: '#bb1a3b'
-  },
-});

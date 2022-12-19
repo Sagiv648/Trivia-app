@@ -1,33 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { View, 
   Text, 
-  Button, 
-  SafeAreaView, 
-  StyleSheet, 
   Image,
-  FlatList,
   TouchableOpacity, 
 } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
-import {pickedCategoryEdit } from './../global/categories'
-import { fetchQuestions } from './../global/questions'
-import { nextQuestion } from './../global/questions'
+import { useSelector } from 'react-redux'
+
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import axios from 'axios'
+
 import QuestionBody from './QuestionBody'
-import { RadioButton } from 'react-native-paper'
 import Timer from './Timer'
+
+import styles from './styles.js'
+
 const QuestionsScreen = (props) => {
 
   
  
   const questions = useSelector((state) => state.questionsGetter.value)
-//   const radioBtnStyle = {
-//     opacity: 0.5,
-//     backgroundColor: 'blue'
-// }
-  //console.log(questions);
+
   const [answer, setAnswer] = useState("")
   const [outOfTime, setOutOfTime] = useState(false)
   const qIndex = props.route.params.questionIndex;
@@ -43,9 +35,6 @@ const QuestionsScreen = (props) => {
       
     questionAnswers = [...currentQuestion.incorrect_answers, currentQuestion.correct_answer]
 
-
-      //console.log(currentQuestion.correct_answer);
-    //console.log(currentQuestion.incorrect_answers);
     } catch (error) {
       
     }
@@ -59,17 +48,19 @@ const QuestionsScreen = (props) => {
   },[qIndex])
 
 if(outOfTime){
+  
   console.log("Out of time");
     props.navigation.navigate("Question", {questionIndex: qIndex+1, 
-      score: answer == currentQuestion.correct_answer ? score + 1 : score, outOfTime: outOfTime })
+      score: answer == currentQuestion.correct_answer ? score + 1 : score,
+      correctlyAnsweredQuestions: [...props.route.params.correctlyAnsweredQuestions, answer == currentQuestion.correct_answer ? currentQuestion : {}],
+          incorrectlyAnsweredQuestions: [...props.route.params.incorrectlyAnsweredQuestions, answer != currentQuestion.correct_answer ? currentQuestion : {}] 
+      ,outOfTime: outOfTime })
   }
  
-  //console.log(currentQuestion);
- 
-  //console.log(questionAnswers);
-  
+
+  console.log(props.route.params);
   return (
-    <View style={styles.container}>
+    <View style={styles.QuestionScreencontainer}>
 
       {/* Header Part */}
       <View style={styles.header}>
@@ -80,10 +71,14 @@ if(outOfTime){
           <TouchableOpacity 
         style={{marginBottom: 17}}
         onPress={() => {
-          //clearInterval(timer)
+          
           props.navigation.navigate("Question", {questionIndex: qIndex+1, 
-            score: answer == currentQuestion.correct_answer ? score + 1 : score })
+            score: answer == currentQuestion.correct_answer ? score + 1 : score,
+            invalid: false,
+          correctlyAnsweredQuestions: [...props.route.params.correctlyAnsweredQuestions, answer == currentQuestion.correct_answer ? currentQuestion : {}],
+          incorrectlyAnsweredQuestions: [...props.route.params.incorrectlyAnsweredQuestions, answer != currentQuestion.correct_answer ? currentQuestion : {}]})
         }}>
+
           <AntDesign name='forward' size={30} color='white'/>
           </TouchableOpacity> :
           <Text></Text>
@@ -95,8 +90,7 @@ if(outOfTime){
         />
       </View>
 
-
-      <View style={[{width: '100%', height: '50%', backgroundColor: '#1d70a3', marginBottom: 10, borderBottomLeftRadius: 40, borderBottomRightRadius: 40,}, qIndex == 20 ? {backgroundColor: 'transparent'} : {}]}>
+      <View style={[styles.questionScreenQuestionBodyStyle, qIndex == 20 ? {backgroundColor: 'transparent'} : {}]}>
       {
         props.route.params.questionIndex == 20 && props.route.params.score < 15 ? 
         <Image 
@@ -118,42 +112,16 @@ if(outOfTime){
          questions={questions}
          questionAnswers = {questionAnswers}
          />
-      //    <RadioButton.Group 
-      //       onValueChange={(val) =>  setAnswer(val)}>
-      //       {
-      //         currentQuestion ?  <Text style={[styles.text, {color: currentQuestion.difficulty == 'hard' ? '#8e052f' :
-      //           currentQuestion.difficulty == 'medium' ? '#aa7305' : '#0bb808'}]}>{currentQuestion.difficulty.toUpperCase()} Question</Text> :
-      //           <Text></Text>
-      //       }
-         
-
-      //   <Text
-      //   style={[styles.text, {color: '#0c3271'}]}
-        
-      //   >{questions.length != 0 ? questions[props.route.params.questionIndex].question : "Loading..."}</Text> 
-      // <FlatList 
-      // data={ qIndex < 10 ? questionAnswers.sort((a,b) => a == b ? 0 : a < b ? -1 : 1) : questionAnswers}
-      // keyExtractor={(item,index) => index}
-      // renderItem={({item}) => {
-      //   return( <RadioButton.Item 
-      //     style={answer == item ? radioBtnStyle : ""}
-      //     label={item}
-      //     labelStyle={[styles.text, {color: '#091e5a'}]} 
-      //     value={item}/>)
-      // }}/>
-
-
-      // </RadioButton.Group> 
       }
       
      
       </View>
 
       {/* Timer */}
-      <Timer 
+      {/* <Timer 
       outOfTimeSetter = {setOutOfTime}
       qIndex={qIndex} styles={styles}
-      answer={answer}/>
+      answer={answer}/> */}
       {/*  Question body */}
 
 
@@ -193,46 +161,4 @@ export const screenOptions = (navData) => {
 
 export default QuestionsScreen
 
-const styles = StyleSheet.create({
-  container: {
-    flex:1, 
-    backgroundColor:'#ffff',
-    
-  },
-  finalScreenImage: {
-    width: '50%',
-    height: '100%',
-    alignSelf: 'center',
-    
-  },
-  image: {
-    height: 60, 
-    width: 60, 
-    marginRight: 10,
-    marginBottom: 5,
-  },
-  header: {
-    width: '100%', 
-    height: '12%', 
-    backgroundColor: '#42B4EC', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'flex-end'
-  },
-  text_header: {
-    fontWeight:'300%', 
-    fontSize:23, 
-    marginBottom: 15, 
-    marginLeft: 15, 
-    fontWeight: 'bold', 
-    fontSize: 28, 
-    color: '#ffff',
-  },
-  text: {
-      fontSize: 20,
-      
-      fontWeight :'bold',
-      color: '#bb1a3b'
-  },
-});
 

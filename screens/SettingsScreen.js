@@ -8,21 +8,19 @@ import {questionsGetter} from './../global/questions'
 import { fetchQuestions } from './../global/questions'
 import CategoryGroup from './CategoryGroup'
 
+
+import styles from './styles'
+
 const SettingsScreen = (props) => {
     const [difficulty, setDifficulty] = useState("")
     const [pickedCategory, setPickedCategory] = useState("")
-    const radioBtnStyle = {
-        opacity: 0.5,
-        backgroundColor: 'blue'
-    }
     
     const dispatch = useDispatch()
     const isInvalid = props.route.params.invalid
 
     
   return (
-    <View style={styles.container}>
-
+    <View style={styles.settingsScreenContainer}>
         {
             isInvalid ? <Text style={styles.text}>Couldn't find data, please pick another combination or a problem occured with the network, try again.</Text> : <Text></Text>
             
@@ -34,7 +32,7 @@ const SettingsScreen = (props) => {
         onPress={() => 
             {   
                dispatch(fetchQuestions({category: pickedCategory, difficulty: difficulty.toLowerCase()}))
-                props.navigation.navigate("Question", {questionIndex: 0, score: 0})
+                props.navigation.navigate("Question", {questionIndex: 0, score: 0, correctlyAnsweredQuestions: [], incorrectlyAnsweredQuestions: []})
             }
             }
         style={{ paddingLeft: 5,width: '35%', height: '15%', backgroundColor: '#bb1a3b', borderRadius: 50
@@ -47,21 +45,21 @@ const SettingsScreen = (props) => {
             <Text style={styles.text}>Select the difficulty: </Text>
             <RadioButton.Group onValueChange={(e) => setDifficulty(e)}>
             <RadioButton.Item 
-            style={ difficulty == "Easy" ? radioBtnStyle : "" }
+            style={ difficulty == "Easy" ? styles.radioBtnCheckedStyle : "" }
             mode='android'
             label='Easy questions'
             value='Easy'
             
             />
             <RadioButton.Item 
-            style={ difficulty == "Medium" ? radioBtnStyle : "" }
+            style={ difficulty == "Medium" ? styles.radioBtnCheckedStyle : "" }
             mode='android'
             label='Medium questions'
             value='Medium'
             
             />
             <RadioButton.Item
-            style={ difficulty == "Hard" ? radioBtnStyle : "" }
+            style={ difficulty == "Hard" ? styles.radioBtnCheckedStyle : "" }
             mode='android'
             label='Hard questions'
             value='Hard'
@@ -75,42 +73,11 @@ const SettingsScreen = (props) => {
            
             <CategoryGroup pickCategory= {setPickedCategory} getterPickedCategory={pickedCategory}/>
 
-
-
-
-
-            {/* <FlatList
-            keyExtractor={(item) => item.id}
-            data={categories}
-            renderItem={(itemRow) => {
-                
-                    return (<Checker data = {itemRow.item} />)
-                      
-                     
-
-            }}
-            /> */}
-            
         </View>
      
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#42B4EC'
-    },
-    text: {
-        fontSize: 20,
-        
-        fontWeight :'bold',
-        color: '#bb1a3b'
-    },
-    difficultyList: {
-        flexDirection: 'row'
-    }
-})
 
 export default SettingsScreen
