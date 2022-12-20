@@ -25,6 +25,7 @@ const QuestionsScreen = (props) => {
 
   const [answer, setAnswer] = useState("")
   const [outOfTime, setOutOfTime] = useState(false)
+  const [maximized,setMaximized] = useState(false)
   const qIndex = props.route.params.questionIndex;
   const score = props.route.params.score;
   
@@ -94,6 +95,19 @@ if(outOfTime){
       </View>
 
       <View style={[styles.questionScreenQuestionBodyStyle, qIndex == 20 ? {backgroundColor: 'transparent'} : {}]}>
+
+      {
+          maximized ?
+         
+
+        <TouchableOpacity 
+        
+        onPress={() => setMaximized(!maximized)}>
+          <AntDesign name='minus' size={30} color='blue'/>
+        </TouchableOpacity>
+        : <Text></Text>
+        }
+        
       {
         props.route.params.questionIndex == 20 && props.route.params.score < 15 ? 
         <Image 
@@ -141,7 +155,9 @@ if(outOfTime){
      
         <TouchableOpacity 
         
-        style={{marginTop: qIndex == 20 ? -20 : 50,justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', borderRadius: 40, backgroundColor: '#125881'}}
+        style={[{marginTop: qIndex == 20 ? -20 : 50,
+          justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', 
+        borderRadius: 40, backgroundColor: '#125881'}]}
         onPress={() => {
           //clearInterval(timer)
           props.navigation.navigate("Home")}} >
@@ -153,9 +169,24 @@ if(outOfTime){
           }
         
         </TouchableOpacity>
+        {
+          !maximized ?
+          <TouchableOpacity 
+        
+        onPress={() => setMaximized(!maximized)}>
+          <AntDesign name='plus' size={30} color='blue'/>
+        </TouchableOpacity> 
+        :
+
+        <Text></Text>
+        }
+        
           {
             qIndex == 20 ?
-            <View style={styles.resultsScreenQuestions}>
+            <View style={[styles.resultsScreenQuestions, maximized ? {
+              height: '70%', marginTop: -450, backgroundColor: '#42B4EC',
+              borderRadius: 0, borderColor: 'transparent'
+            } : {}]}>
               <FlatList
               data={props.route.params.correctlyAnsweredQuestions.concat(props.route.params.incorrectlyAnsweredQuestions).
                 filter(x => 
@@ -180,7 +211,8 @@ if(outOfTime){
                 ))}}
                 style={{flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: -4}}>
                   
-                  <Text style={{fontSize: 10, paddingLeft: 5}}>{item.question}</Text>
+                  <Text style={[{fontSize: 10, paddingLeft: 5},
+                  maximized ? {fontSize:  20} : {}]}>{item.question}</Text>
                   
                   <AntDesign name={props.route.params.correctlyAnsweredQuestions.findIndex( x => x == item) == -1
                   ? 'close' : 'check'}
