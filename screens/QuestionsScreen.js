@@ -137,10 +137,16 @@ if(outOfTime && qIndex < 20){
       {/* Timer */}
       {
         qIndex < 20 ? <Timer 
+        navigator={props.navigation.navigate}
+        currentState={{questionIndex: qIndex, 
+          score:  score,
+          correctlyAnsweredQuestions: props.route.params.correctlyAnsweredQuestions,
+              incorrectlyAnsweredQuestions: props.route.params.incorrectlyAnsweredQuestions }}
       movedOnGetter = {movedOn}
       outOfTimeSetter = {setOutOfTime}
       qIndex={qIndex} styles={styles}
-      answer={answer}/> : <Text></Text>
+      answer={answer}
+      questions={questions}/> : <Text></Text>
       }
       
       {/*  Question body

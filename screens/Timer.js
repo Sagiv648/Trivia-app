@@ -11,9 +11,12 @@ const Timer = (props) => {
     //     props.qIndex > 10 && props.qIndex < 15 ? 15 : 10)
     const [seconds, setSeconds] = useState(props.qIndex <= 10 ? 30 : 
       props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
-
+  //const [seconds, setSeconds] = useState(5) //testing
    let timer;
-
+   const qIndex = props.qIndex;
+   const score = props.currentState.score;
+   const questions = props.questions
+   const currentQuestion = questions[qIndex]
 
    useEffect(() => {
     if(props.qIndex < 20){
@@ -28,7 +31,12 @@ const Timer = (props) => {
 
     if(seconds == 0){
       clearInterval(timer)
-      props.outOfTimeSetter(true)
+      //props.outOfTimeSetter(true)
+      props.navigator("Question", {questionIndex: qIndex+1, 
+        score: props.answer == currentQuestion.correct_answer ? score + 1 : score,
+        invalid: false,
+      correctlyAnsweredQuestions: [...props.currentState.correctlyAnsweredQuestions, props.answer == currentQuestion.correct_answer ? currentQuestion : {}],
+      incorrectlyAnsweredQuestions: [...props.currentState.incorrectlyAnsweredQuestions, props.answer != currentQuestion.correct_answer ? currentQuestion : {}]})
       setSeconds(props.qIndex <= 10 ? 30 : 
       props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
     }
