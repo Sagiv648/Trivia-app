@@ -97,7 +97,7 @@ if(outOfTime){
       <View style={[styles.questionScreenQuestionBodyStyle, qIndex == 20 ? {backgroundColor: 'transparent'} : {}]}>
 
       {
-          maximized ?
+          maximized && qIndex == 20 ?
          
 
         <TouchableOpacity 
@@ -170,7 +170,7 @@ if(outOfTime){
         
         </TouchableOpacity>
         {
-          !maximized ?
+          !maximized && qIndex == 20 ?
           <TouchableOpacity 
         
         onPress={() => setMaximized(!maximized)}>
