@@ -7,23 +7,40 @@ const Timer = (props) => {
     //     props.qIndex > 10 && props.qIndex <= 15 ? 15 : 10)
     //     console.log(`qIndex is ${props.qIndex}`);
 
+    // const [seconds, setSeconds] = useState(props.qIndex < 10 ? 30 : 
+    //     props.qIndex > 10 && props.qIndex < 15 ? 15 : 10)
     const [seconds, setSeconds] = useState(props.qIndex <= 10 ? 30 : 
-        props.qIndex > 10 && props.qIndex <= 15 ? 15 : 10)
+      props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
 
    let timer;
 
 
    useEffect(() => {
-
-        timer = setInterval(() => {
-            setSeconds(seconds-1)
-            
-        }, 1000)
-
+    if(props.qIndex < 20){
+      timer = setInterval(() => {
+        setSeconds(seconds-1)
         if(seconds == 0){
-          clearInterval(timer)
+          clearInterval(timer);
           props.outOfTimeSetter(true)
         }
+        
+    }, 1000)
+
+    if(seconds == 0){
+      clearInterval(timer)
+      props.outOfTimeSetter(true)
+      setSeconds(props.qIndex <= 10 ? 30 : 
+      props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
+    }
+    else if(seconds != 0 && props.movedOnGetter){
+      clearInterval(timer)
+      setSeconds(props.qIndex <= 10 ? 30 : 
+      props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
+      
+    }
+    }
+        
+        
         
     return () => clearInterval(timer)
    })

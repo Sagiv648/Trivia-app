@@ -15,7 +15,6 @@ import QuestionBody from './QuestionBody'
 import Timer from './Timer'
 
 import styles from './styles.js'
-import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 
 const QuestionsScreen = (props) => {
 
@@ -28,7 +27,7 @@ const QuestionsScreen = (props) => {
   const [maximized,setMaximized] = useState(false)
   const qIndex = props.route.params.questionIndex;
   const score = props.route.params.score;
-  
+  const [movedOn,setMovedOn] = useState(false)
   if(!questions){
     props.navigation.navigate("Settings", {invalid: true})
   }
@@ -47,11 +46,12 @@ const QuestionsScreen = (props) => {
     
     setOutOfTime(false)
     setAnswer("")
+    setMovedOn(false)
 
   
   },[qIndex])
 
-if(outOfTime){
+if(outOfTime && qIndex < 20){
   
   console.log("Out of time");
     props.navigation.navigate("Question", {questionIndex: qIndex+1, 
@@ -62,7 +62,7 @@ if(outOfTime){
   }
  
 
-  console.log(props.route.params);
+  //console.log(props.route.params);
   return (
     <View style={styles.QuestionScreencontainer}>
 
@@ -75,7 +75,7 @@ if(outOfTime){
           <TouchableOpacity 
         style={{marginBottom: 17}}
         onPress={() => {
-          
+          setMovedOn(true)
           props.navigation.navigate("Question", {questionIndex: qIndex+1, 
             score: answer == currentQuestion.correct_answer ? score + 1 : score,
             invalid: false,
@@ -135,11 +135,15 @@ if(outOfTime){
       </View>
 
       {/* Timer */}
-      {/* <Timer 
+      {
+        qIndex < 20 ? <Timer 
+      movedOnGetter = {movedOn}
       outOfTimeSetter = {setOutOfTime}
       qIndex={qIndex} styles={styles}
-      answer={answer}/> */}
-      {/*  Question body */}
+      answer={answer}/> : <Text></Text>
+      }
+      
+      {/*  Question body
       {
         /* ----------------------------*/
       }
@@ -184,7 +188,7 @@ if(outOfTime){
           {
             qIndex == 20 ?
             <View style={[styles.resultsScreenQuestions, maximized ? {
-              height: '70%', marginTop: -450, backgroundColor: '#42B4EC',
+              height: '70%', marginTop: -469, backgroundColor: '#42B4EC',
               borderRadius: 0, borderColor: 'transparent'
             } : {}]}>
               <FlatList
