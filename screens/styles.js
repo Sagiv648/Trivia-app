@@ -6,6 +6,17 @@ export default StyleSheet.create({
       backgroundColor:'#ffff',
       
     },
+    resultsScreenQuestions : 
+    {
+      width: '100%', 
+    height: '30%',
+     marginTop: 0,
+     borderColor: '#42B4EC',
+     backgroundColor: 'transparent',
+     borderStyle: 'solid',
+     borderWidth: 5,
+     borderRadius: 10
+    },
     homeScreenContainer: {
         flex: 1,
         backgroundColor: '#42B4EC',

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { View, 
   Text, 
   Image,
-  TouchableOpacity, 
+  TouchableOpacity,
+  Alert,
+  FlatList, 
 } from 'react-native'
 import { useSelector } from 'react-redux'
 
@@ -13,6 +15,7 @@ import QuestionBody from './QuestionBody'
 import Timer from './Timer'
 
 import styles from './styles.js'
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 
 const QuestionsScreen = (props) => {
 
@@ -123,8 +126,13 @@ if(outOfTime){
       qIndex={qIndex} styles={styles}
       answer={answer}/> */}
       {/*  Question body */}
+      {
+        /* ----------------------------*/
+      }
 
-
+      {
+        /*----------------------------------*/
+      }
 
 
       
@@ -133,7 +141,7 @@ if(outOfTime){
      
         <TouchableOpacity 
         
-        style={{marginTop: 50,justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', borderRadius: 40, backgroundColor: '#125881'}}
+        style={{marginTop: qIndex == 20 ? -20 : 50,justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', borderRadius: 40, backgroundColor: '#125881'}}
         onPress={() => {
           //clearInterval(timer)
           props.navigation.navigate("Home")}} >
@@ -145,6 +153,58 @@ if(outOfTime){
           }
         
         </TouchableOpacity>
+          {
+            qIndex == 20 ?
+            <View style={styles.resultsScreenQuestions}>
+              <FlatList
+              data={props.route.params.correctlyAnsweredQuestions.concat(props.route.params.incorrectlyAnsweredQuestions).
+                filter(x => 
+                Object.keys(x).length != 0)}
+              keyExtractor={(item,index) => index}
+              renderItem={({item}) => {
+
+                return (
+                <TouchableOpacity 
+                
+                onPress={()=> { return ( Alert.alert("Answers", `${
+                  item.incorrect_answers.length == 1 ?
+                  '- ' + item.incorrect_answers[0] + '\n' +
+                  '- CORRECT >> ' + item.correct_answer
+                  
+                  :
+                  '- ' +item.incorrect_answers[0] + '\n' +
+                  '- ' + item.incorrect_answers[1] + '\n' +
+                  '- ' + item.incorrect_answers[2] + '\n' +
+                  '- CORRECT >> ' + item.correct_answer
+                }`,
+                ))}}
+                style={{flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: -4}}>
+                  
+                  <Text style={{fontSize: 10, paddingLeft: 5}}>{item.question}</Text>
+                  
+                  <AntDesign name={props.route.params.correctlyAnsweredQuestions.findIndex( x => x == item) == -1
+                  ? 'close' : 'check'}
+                  
+                  size={15} color={
+                    props.route.params.correctlyAnsweredQuestions.findIndex(x => x == item) == -1
+                  ? 'red' : 'green'
+                  }/>
+                </TouchableOpacity>
+                )
+                
+              }
+               
+            }
+              />
+
+              
+
+          </View> :
+          <Text></Text>
+          }
+          
+
+
     </View>
   )
 }
