@@ -2,16 +2,10 @@ import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from './styles'
 const Timer = (props) => {
-
-    // const [seconds, setSeconds] = useState(props.qIndex <= 10 ? 30 : 
-    //     props.qIndex > 10 && props.qIndex <= 15 ? 15 : 10)
-    //     console.log(`qIndex is ${props.qIndex}`);
-
-    // const [seconds, setSeconds] = useState(props.qIndex < 10 ? 30 : 
-    //     props.qIndex > 10 && props.qIndex < 15 ? 15 : 10)
+  
     const [seconds, setSeconds] = useState(props.qIndex <= 10 ? 30 : 
       props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
-  //const [seconds, setSeconds] = useState(5) //testing
+
    let timer;
    const qIndex = props.qIndex;
    const score = props.currentState.score;
