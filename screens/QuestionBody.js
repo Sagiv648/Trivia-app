@@ -29,7 +29,8 @@ const QuestionBody = (props) => {
 <Text
 style={[styles.text, {color: '#0c3271'}]}
 
->{questions.length != 0 ? questions[qIndex].question : "Loading..."}</Text> 
+>{questions.length != 0 ? questions[qIndex].question : "Loading...\nIf it takes too long, it may be that a questionnaire couldn't be generated" + 
+" or it may be a network problem, try to run different settings or check your network."}</Text> 
 <FlatList 
 data={ qIndex < 10 ? questionAnswers.sort((a,b) => a == b ? 0 : a < b ? -1 : 1) : questionAnswers}
 keyExtractor={(item,index) => index}

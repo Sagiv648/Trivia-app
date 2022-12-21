@@ -23,7 +23,7 @@ const QuestionsScreen = (props) => {
   const questions = useSelector((state) => state.questionsGetter.value)
 
   const [answer, setAnswer] = useState("")
-  const [outOfTime, setOutOfTime] = useState(false)
+  //const [outOfTime, setOutOfTime] = useState(false)
   const [maximized,setMaximized] = useState(false)
   const qIndex = props.route.params.questionIndex;
   const score = props.route.params.score;
@@ -44,25 +44,13 @@ const QuestionsScreen = (props) => {
   useEffect(() => {
   
     
-    setOutOfTime(false)
+    //setOutOfTime(false)
     setAnswer("")
     setMovedOn(false)
 
   
   },[qIndex])
 
-if(outOfTime && qIndex < 20){
-  
-  console.log("Out of time");
-    props.navigation.navigate("Question", {questionIndex: qIndex+1, 
-      score: answer == currentQuestion.correct_answer ? score + 1 : score,
-      correctlyAnsweredQuestions: [...props.route.params.correctlyAnsweredQuestions, answer == currentQuestion.correct_answer ? currentQuestion : {}],
-          incorrectlyAnsweredQuestions: [...props.route.params.incorrectlyAnsweredQuestions, answer != currentQuestion.correct_answer ? currentQuestion : {}] 
-      ,outOfTime: outOfTime })
-  }
- 
-
-  //console.log(props.route.params);
   return (
     <View style={styles.QuestionScreencontainer}>
 
@@ -136,14 +124,13 @@ if(outOfTime && qIndex < 20){
 
       {/* Timer */}
       {
-        qIndex < 20 ? <Timer 
+        qIndex < 20 && questions.length != 0 ? <Timer 
         navigator={props.navigation.navigate}
         currentState={{questionIndex: qIndex, 
           score:  score,
           correctlyAnsweredQuestions: props.route.params.correctlyAnsweredQuestions,
               incorrectlyAnsweredQuestions: props.route.params.incorrectlyAnsweredQuestions }}
       movedOnGetter = {movedOn}
-      outOfTimeSetter = {setOutOfTime}
       qIndex={qIndex} styles={styles}
       answer={answer}
       questions={questions}/> : <Text></Text>
@@ -169,8 +156,14 @@ if(outOfTime && qIndex < 20){
           justifyContent: 'center' , alignItems: 'center', width: '100%', height: '10%', 
         borderRadius: 40, backgroundColor: '#125881'}]}
         onPress={() => {
-          //clearInterval(timer)
-          props.navigation.navigate("Home")}} >
+          
+          props.navigation.reset({index: 0,
+          routes: [{name: 'Home'}]})
+          
+          
+        }
+          
+          } >
           {
             qIndex < 20 ?
             <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}} >You can exit any time, press here.</Text> :

@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import styles from './styles'
 const Timer = (props) => {
-  
+
     const [seconds, setSeconds] = useState(props.qIndex <= 10 ? 30 : 
       props.qIndex >= 10 && props.qIndex <= 15 ? 15 : 10)
 
@@ -18,14 +18,12 @@ const Timer = (props) => {
         setSeconds(seconds-1)
         if(seconds == 0){
           clearInterval(timer);
-          props.outOfTimeSetter(true)
         }
         
     }, 1000)
 
     if(seconds == 0){
       clearInterval(timer)
-      //props.outOfTimeSetter(true)
       props.navigator("Question", {questionIndex: qIndex+1, 
         score: props.answer == currentQuestion.correct_answer ? score + 1 : score,
         invalid: false,
