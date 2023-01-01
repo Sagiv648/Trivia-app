@@ -81,7 +81,7 @@ export default StyleSheet.create({
     },
     homeScreenBtn_text: {
         fontWeight: 'bold',
-        fontSize: 25,
+        fontSize: 22,
         color: '#454545',
       },
 

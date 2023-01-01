@@ -23,7 +23,7 @@ const QuestionsScreen = (props) => {
   const questions = useSelector((state) => state.questionsGetter.value)
 
   const [answer, setAnswer] = useState("")
-  //const [outOfTime, setOutOfTime] = useState(false)
+  
   const [maximized,setMaximized] = useState(false)
   const qIndex = props.route.params.questionIndex;
   const score = props.route.params.score;
@@ -42,9 +42,6 @@ const QuestionsScreen = (props) => {
       
     }
   useEffect(() => {
-  
-    
-    //setOutOfTime(false)
     setAnswer("")
     setMovedOn(false)
 
@@ -136,18 +133,7 @@ const QuestionsScreen = (props) => {
       questions={questions}/> : <Text></Text>
       }
       
-      {/*  Question body
-      {
-        /* ----------------------------*/
-      }
-
-      {
-        /*----------------------------------*/
-      }
-
-
-      
-
+     
       {/* Forefit part */}
      
         <TouchableOpacity 

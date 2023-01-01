@@ -6,7 +6,7 @@ import styles from './styles';
 const QuestionBody = (props) => {
     
   const qIndex = props.questionIndex;
-  const score = props.score;
+  //const score = props.score;
   const questions = props.questions
   const currentQuestion = questions[qIndex]
   const questionAnswers = props.questionAnswers

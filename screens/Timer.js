@@ -44,9 +44,6 @@ const Timer = (props) => {
         
     return () => clearInterval(timer)
    })
-    if(seconds == 0){
-        console.log("TIME'S UP");
-    }
   return (
     <View
       style={styles.timerViewContainer}>
